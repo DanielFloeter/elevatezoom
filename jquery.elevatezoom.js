@@ -40,8 +40,16 @@ if ( typeof Object.create !== 'function' ) {
 
 				self.elem = elem;
 				self.$elem = $( elem );
+				
+				var srcElement = self.elem.querySelector('img');
+				if (srcElement) {
+					self.imageSrc = srcElement.getAttribute('data-src') || srcElement.currentSrc || srcElement.src;
+				}
+				if (!self.imageSrc) {
+					return;
+				}
 
-				self.imageSrc = self.$elem.data("zoom-image") ? self.$elem.data("zoom-image") : self.$elem.attr("src");
+				// self.imageSrc = self.$elem.data("zoom-image") ? self.$elem.data("zoom-image") : self.$elem.attr("src");
 
 				self.options = $.extend( {}, $.fn.elevateZoom.options, options );
 
@@ -254,9 +262,7 @@ if ( typeof Object.create !== 'function' ) {
 
 				}
 
-				//create the div's                                                + ""
-				//self.zoomContainer = $('<div/>').addClass('zoomContainer').css({"position":"relative", "height":self.nzHeight, "width":self.nzWidth});
-
+				//create the div's
 				self.zoomContainer = $('<div class="zoomContainer" style="-webkit-transform: translateZ(0);position:absolute;left:'+self.nzOffset.left+'px;top:'+self.nzOffset.top+'px;height:'+self.nzHeight+'px;width:'+self.nzWidth+'px;"></div>');
 				$('body').append(self.zoomContainer);	
 
@@ -292,15 +298,9 @@ if ( typeof Object.create !== 'function' ) {
 							self.$elem.trigger('click');
 						});
 
-					}          
+					}       
 
 				}
-
-
-
-
-
-
 
 				//create zoom window 
 				if(isNaN(self.options.zoomWindowPosition)){
@@ -435,27 +435,20 @@ if ( typeof Object.create !== 'function' ) {
 						self.lastX = e.clientX;
 						self.lastY = e.clientY;    
 					});
-
 				}
-
 
 				//  lensFadeOut: 500,  zoomTintFadeIn
 				self.zoomContainer.add(self.$elem).mouseenter(function(){
 
-					if(self.overWindow == false){self.setElements("show");} 
-
+					if(self.overWindow == false){self.setElements("show");}
 
 				}).mouseleave(function(){
 					if(!self.scrollLock){
 						self.setElements("hide");
-            self.options.onDestroy(self.$elem);
+						self.options.onDestroy(self.$elem);
 					}
 				});
-				//end ove image
-
-
-
-
+				//end over image
 
 				if(self.options.zoomType != "inner") {
 					self.zoomWindow.mouseenter(function(){
@@ -466,14 +459,7 @@ if ( typeof Object.create !== 'function' ) {
 						self.overWindow = false;
 					});
 				}
-				//end ove image
-
-
-
-//				var delta = parseInt(e.originalEvent.wheelDelta || -e.originalEvent.detail);
-
-				//      $(this).empty();    
-				//    return false;
+				//end over image
 
 				//fix for initial zoom setting
 				if (self.options.zoomLevel != 1){
@@ -494,8 +480,8 @@ if ( typeof Object.create !== 'function' ) {
 					self.zoomContainer.add(self.$elem).bind('mousewheel DOMMouseScroll MozMousePixelScroll', function(e){
 
 
-//						in IE there is issue with firing of mouseleave - So check whether still scrolling
-//						and on mouseleave check if scrolllock          
+						// in IE there is issue with firing of mouseleave - So check whether still scrolling
+						// and on mouseleave check if scrolllock          
 						self.scrollLock = true;
 						clearTimeout($.data(this, 'timer'));
 						$.data(this, 'timer', setTimeout(function() {
@@ -542,11 +528,10 @@ if ( typeof Object.create !== 'function' ) {
 					});
 				}
 
-
 			},
 			setElements: function(type) {
 				var self = this;
-        if(!self.options.zoomEnabled){return false;}
+			if(!self.options.zoomEnabled){return false;}
 				if(type=="show"){
 					if(self.isWindowSet){
 						if(self.options.zoomType == "inner") {self.showHideWindow("show");}
@@ -666,7 +651,6 @@ if ( typeof Object.create !== 'function' ) {
 				}
 				//else continue with operations
 				else {
-
 
 					//lens options
 					if(self.options.showLens) {
@@ -1733,8 +1717,8 @@ if ( typeof Object.create !== 'function' ) {
 	};
 
 	$.fn.elevateZoom.options = {
-			zoomActivation: "hover", // Can also be click (PLACEHOLDER FOR NEXT VERSION)
-      zoomEnabled: true, //false disables zoomwindow from showing
+			zoomActivation: "hover", //can also be click (PLACEHOLDER FOR NEXT VERSION)
+			zoomEnabled: true, //false disables zoomwindow from showing
 			preloading: 1, //by default, load all the images, if 0, then only load images after activated (PLACEHOLDER FOR NEXT VERSION)
 			zoomLevel: 1, //default zoom level of image
 			scrollZoom: false, //allow zoom on mousewheel, true to activate
@@ -1775,13 +1759,13 @@ if ( typeof Object.create !== 'function' ) {
 			gallery: false,
 			galleryActiveClass: "zoomGalleryActive",
 			imageCrossfade: false,
-			constrainType: false,  //width or height
-			constrainSize: false,  //in pixels the dimensions you want to constrain on
+			constrainType: false, //width or height
+			constrainSize: false, //in pixels the dimensions you want to constrain on
 			loadingIcon: false, //http://www.example.com/spinner.gif
 			cursor:"default", // user should set to what they want the cursor as, if they have set a click function
 			responsive:true,
 			onComplete: $.noop,
-      onDestroy: function() {},
+			onDestroy: function() {},
 			onZoomedImageLoaded: function() {},
 			onImageSwap: $.noop,
 			onImageSwapComplete: $.noop
